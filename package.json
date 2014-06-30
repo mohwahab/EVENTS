@@ -1,0 +1,21 @@
+{
+  "name": "EVENTS",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+	  "test" : "mocha",  
+	  "start": "node app.js"
+  },
+  "dependencies": {
+	  "express": "3.x",
+	  "mongoose": "3.6.x",
+	  "superagent": "*",
+	  "should":"*",
+	  "socket.io":"*",
+	  "socket.io-client":"*",
+	  "mocha": "1.11.0",
+	  "loglevel" : "*",
+	  "async" : "*",
+	  "node-uuid": "*"
+  }
+}
