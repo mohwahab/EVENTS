@@ -28,19 +28,20 @@ if ('development' == app.get('env')) {
 
 app.post('/add', function(req, res) {
 	log.info("[ "+req.method+" /add/"+JSON.stringify(req.body)+" ]");
-	Event.createEvent(req.body, function(error){    		
+	Event.createEvent(req.body, function(error, newEvent){    		
 		if(error){    			
 			log.error("ADD EVENT ERROR: "+error);
 			res.json(500, error);
 		}else{   
-			res.send(200); 			
+			//res.send(200);
+			res.json({id:newEvent.id}); 			
 		}
 	});
 });
 
-app.get('/events/', function(req, res) {
-	log.info("[ "+req.method+" /events/ ]");
-	Event.getEvent(function(error, events){
+app.get('/events', function(req, res) {
+	log.info("[ "+req.method+" /events ]");
+	Event.getEvents(function(error, events){
 		if(error) {
 	    	 log.error("ERROR: "+JSON.stringify(result.error));
 	    	 res.json(500, error);

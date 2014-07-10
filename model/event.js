@@ -41,20 +41,21 @@ var Event = function(){
 	var _createEvent = function(event, callback){
 		log.debug("[name]: "+event.name+" [description]: "+event.description+" [lng]: "+event.lng+" [lat]: "+event.lat+" [startdate]: "+event.startdate+" [enddate]: "+event.enddate+" [country]: "+event.country+" [type]: "+event.type+" [time]: "+event.time);
 		_model.create({ name: event.name, description: event.description, lat: event.lat, lng: event.lng, startdate: event.startdate, enddate: event.enddate, country: event.country, type: event.type, time: event.time},function(error,newEvent){
-				if(error) {
-					log.error("ERROR CREATE EVENT: "+error);
-					callback({ error : error});
-		       } else {
-		       		callback();
-		       }
-		        
+				// if(error) {
+					// log.error("ERROR CREATE EVENT: "+error);
+					// callback({ error : error});
+		       // } else {
+		       		// callback();
+		       // }
+		       callback(error, newEvent); 
 			});
 	};
 	
 	var _getEvents = function(callback){
 		//log.debug("[startdate]: "+startdate+" [enddate]: "+enddate);
 		//_model.find({'Date.now': {"$gte": "startdate", "$lte": "enddate"}},function(error,events){
-		_model.find( { $or: [ { startdate: {"$lte": new Date()} }, { enddate: {"$gte": new Date()} } ] }, {_id:0, __v:0, 'time._id':0} ,function(error,events){	
+		//_model.find( { $or: [ { startdate: {"$lte": new Date()} }, { enddate: {"$gte": new Date()} } ] }, {_id:0, __v:0, 'time._id':0} ,function(error,events){
+		_model.find( { $or: [ { startdate: {"$lte": new Date()} }, { enddate: {"$gte": new Date()} } ] }, {__v:0, 'time._id':0} ,function(error,events){		
 				    		 callback(error, events);
 		});
 	};   

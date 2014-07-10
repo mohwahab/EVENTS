@@ -45,10 +45,7 @@ afterEach(function(done){
 });		
 
 describe('Events', function(){
-    
-    it("Should be able to add new event", function(done){
-        //this.timeout(100000);
-        var eventObj={
+    var eventObj={
                         name:"Ramadan Karim",
                         description:"Go Charity",
                         startdate: new Date('Jun 29, 2014'),
@@ -59,18 +56,60 @@ describe('Events', function(){
                         lat:"31.099865",
                         lng:"30.021395"
                    }
-         console.log("1:::: "+eventObj.time[0].starttime);          
-         console.log("2:::: "+eventObj.time[0].endtime);          
-        //eventObj="1"
+                   
+    it("Should be able to add new event", function(done){
+        this.timeout(300000);
         request
             .post(svrUrl+'/add')
             .send(eventObj)
             .end(function(res){
                 res.statusCode.should.equal(200);
+                console.log("RESPONSE: "+JSON.stringify(res.body));
                 Event.getEvents(function(error, events){
                   console.log("ERROR: "+JSON.stringify(error));
                   console.log("EVENTS: "+JSON.stringify(events));
+                  res.body.id.should.equal(events[0]._id.toString());
                 	JSON.stringify(events).should.eql(JSON.stringify([
+                                      {
+                                        "name": eventObj.name,
+                                        "description": eventObj.description,
+                                        "lat": eventObj.lat,
+                                        "lng": eventObj.lng,
+                                        "startdate": eventObj.startdate,
+                                        "enddate": eventObj.enddate,
+                                        "country": eventObj.country,
+                                       "type": eventObj.type,
+                                       "_id": events[0]._id,                                      
+                                       "time": [
+                                         {
+                                           "starttime": eventObj.time[0].starttime,
+                                           "endtime": eventObj.time[0].endtime                               
+                                         }
+                                       ]
+                                     }
+                                  ])
+                               );
+                	done();
+                });
+              
+            });
+    });
+    
+    
+    it("Should be able get today's event(s)", function(done){
+        
+        Event.createEvent(eventObj, function(error){    		
+		      if(error){    			
+			        log.error("TEST ADD EVENT ERROR: "+error);
+		      }else{   
+		          request
+              .get(svrUrl+'/events')
+              .end(function(res){        	
+                  res.should.be.json;
+                  res.statusCode.should.equal(200);
+                  console.log("RESPONCE: "+JSON.stringify(res.body));
+                  delete res.body[0]._id
+                  JSON.stringify(res.body).should.eql(JSON.stringify([
                                       {
                                         "name": eventObj.name,
                                         "description": eventObj.description,
@@ -89,10 +128,10 @@ describe('Events', function(){
                                      }
                                   ])
                                );
-                	done();
-                });
-              
-            });
-    });       
+                  done();
+              }); 
+		      }
+	      });
+	  });       
         
 });
